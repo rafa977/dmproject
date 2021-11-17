@@ -190,9 +190,6 @@ Use the Pi ENV variabes from above
 `peer channel update -o localhost:7150 --ordererTLSHostnameOverride orderer.auth -c dmproject -f ${PWD}/network/channel-artifacts/PiAnchors.tx --tls --cafile $ORDERER_CA`
 
 
-# How to invoke cli bash [Optional]
-`docker exec -e CORE_PEER_LOCALMSPID="BETAXIOSSDRPOCMSP" -e CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/betax.ebsi.eu/users/Admin@betax.ebsi.eu/msp  -it cli bash`
-
 #  Network operations
 
 ###  Bring down the network
