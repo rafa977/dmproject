@@ -75,35 +75,6 @@ docker-compose -f ./network/docker/docker-compose-ca.yml up -d
 ```
 
 
-### Crypto Generator - crypto-gen 
-
-In order to create the crypto files, you can run the script of `crypto-gen.sh` file.
-
-E.g. Create new user for organization
-```
-./crypto-gen.sh -o orgName -t user -u 'user1' -c ca_auth -p 7054 
-```
-`-o` ==> Organization Name where you want to create your files
-`-u` ==> String array where you specify the username for each user separated with space
-`-p` ==> Port where the ca listens to
-`-c` ==> ca name of the CA that corresponds to the organization
-`-t` ==> type of crypto files creation (user, orderer, peer, admin)
-
-When an `orderer` is created the `-u` is not required since a default orderer user is created.
-
-Copy the configtx, docker yaml files and the from the source to the corresponding destination folders  
-
-
-In order to have a functional network you need to have the following nodes:
-
-1. Peer Organization
-    1. Peer
-    2. User
-    3. Admin 
-2. Orderer Organization
-    1. Orderer
-    2. Admin User
-
 
 #### Set "FABRIC_CFG_PATH"
 `export FABRIC_CFG_PATH=${PWD}/network/configtx`
@@ -116,10 +87,14 @@ Grant execution permission to `configtx.yaml`
 #  Build the network
 
 ### Generate system genesis block
-`configtxgen -profile PocOrgsOrdererGenesis -channelID system-channel -outputBlock ./network/system-genesis-block/genesis.block`
+```
+configtxgen -profile PocOrgsOrdererGenesis -channelID system-channel -outputBlock ./network/system-genesis-block/genesis.block
+```
 
 ### Bring the network up with couchdb
-`docker-compose -f network/docker/docker-compose-net.yaml  up -d`
+```
+docker-compose -f network/docker/docker-compose-net.yaml  up -d
+```
 
 ### Create channel block
 **Attention**: Please be sure to have write privs on the `channel-artifacts` directory
@@ -144,7 +119,9 @@ In case `config` is in `/etc/hyperledger/config` then:
 `export FABRIC_CFG_PATH=/etc/hyperledger/config`
 
 #### Set "ORDERER_CA" this is for our convenience
-`export ORDERER_CA=${PWD}/network/organizations/ordererOrganizations/auth/orderers/orderer.auth/msp/tlscacerts/tlsca.auth-cert.pem`
+```
+export ORDERER_CA=${PWD}/network/organizations/ordererOrganizations/auth/orderers/orderer.auth/msp/tlscacerts/tlsca.auth-cert.pem
+```
 
 #### Set Kali variabes
 ```
@@ -156,13 +133,17 @@ export CORE_PEER_ADDRESS=localhost:7151
 ```
 #### Create the channel
 
-`peer channel create  -o localhost:7150  -c dmproject --ordererTLSHostnameOverride orderer.auth  -f ${PWD}/network/channel-artifacts/dmproject.tx --outputBlock ./network/channel-artifacts/dmproject.block --tls true --cafile ${PWD}/network/organizations/ordererOrganizations/auth/orderers/orderer.auth/msp/tlscacerts/tlsca.auth-cert.pem`
+```
+peer channel create  -o localhost:7150  -c dmproject --ordererTLSHostnameOverride orderer.auth  -f ${PWD}/network/channel-artifacts/dmproject.tx --outputBlock ./network/channel-artifacts/dmproject.block --tls true --cafile ${PWD}/network/organizations/ordererOrganizations/auth/orderers/orderer.auth/msp/tlscacerts/tlsca.auth-cert.pem
+```
 
 ### Kali join the channel
 Use the ENV variabes from above for Kali organization
 
 #### Join the channel Kali
-`peer channel join -b ./network/channel-artifacts/dmproject.block`
+```
+peer channel join -b ./network/channel-artifacts/dmproject.block
+```
 
 ### Pi join the channel
 
@@ -175,26 +156,36 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/network/organizations/peerOrganizations/pi
 export CORE_PEER_ADDRESS=localhost:8151
 ```
 #### Join the channel Pi
-`peer channel join -b ./network/channel-artifacts/dmproject.block`
+```
+peer channel join -b ./network/channel-artifacts/dmproject.block
+```
 
 
 ### Update the channel definition to define the anchor peer for  Kali
 Use the Kali ENV variabes from above
 
-`peer channel update -o localhost:7150 --ordererTLSHostnameOverride orderer.auth -c dmproject -f ${PWD}/network/channel-artifacts/KaliAnchors.tx --tls --cafile $ORDERER_CA`
+```
+peer channel update -o localhost:7150 --ordererTLSHostnameOverride orderer.auth -c dmproject -f ${PWD}/network/channel-artifacts/KaliAnchors.tx --tls --cafile $ORDERER_CA
+```
 
 
 ### Update the channel definition to define the anchor peer for  Pi
 Use the Pi ENV variabes from above
 
-`peer channel update -o localhost:7150 --ordererTLSHostnameOverride orderer.auth -c dmproject -f ${PWD}/network/channel-artifacts/PiAnchors.tx --tls --cafile $ORDERER_CA`
+```
+peer channel update -o localhost:7150 --ordererTLSHostnameOverride orderer.auth -c dmproject -f ${PWD}/network/channel-artifacts/PiAnchors.tx --tls --cafile $ORDERER_CA
+```
 
 
 #  Network operations
 
 ###  Bring down the network
 #### With Fabric CA
-`docker-compose -f network/docker/docker-compose-net.yaml -f network/docker/docker-compose-ca.yaml down`
+```
+docker-compose -f network/docker/docker-compose-net.yaml -f network/docker/docker-compose-ca.yaml down
+```
 
 #### Without Fabric CA
-`docker-compose -f network/docker/docker-compose-net.yaml down`
+```
+docker-compose -f network/docker/docker-compose-net.yaml down
+```
