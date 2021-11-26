@@ -141,6 +141,7 @@ In order to add an attribute we have to modify an existing user and then reenrol
 
 ```
 .addAttribute.sh -o kali -c ca_kali -u user_1 -a 'age=Kid:ecert' -i 7154 -p passwordUser
+```
 
 #### Set "FABRIC_CFG_PATH"
 `export FABRIC_CFG_PATH=${PWD}/network/configtx`
@@ -248,10 +249,10 @@ peer channel update -o localhost:7150 --ordererTLSHostnameOverride orderer.auth 
 ###  Bring down the network
 #### With Fabric CA
 ```
-docker-compose -f network/docker/docker-compose-net.yml -f network/docker/docker-compose-ca.yml down
+docker-compose -f network/docker/docker-compose-net.yaml -f network/docker/docker-compose-ca.yaml down
 ```
 
 #### Without Fabric CA
 ```
-docker-compose -f network/docker/docker-compose-net.yml down
+docker-compose -f network/docker/docker-compose-net.yaml down
 ```
