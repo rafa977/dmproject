@@ -16,7 +16,7 @@ services:
 
   orderer.auth:
     container_name: orderer.auth
-    image: hyperledger/fabric-orderer:$IMAGE_TAG
+    image: hyperledger/fabric-orderer:2.2.0
     environment:
       - FABRIC_LOGGING_SPEC=INFO
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -49,14 +49,14 @@ services:
 
   peer0.kali:
     container_name: peer0.kali
-    image: hyperledger/fabric-peer:$IMAGE_TAG
+    image: hyperledger/fabric-peer:2.2.0
     environment:
       #Generic peer variables
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       # the following setting starts chaincode containers on the same
       # bridge network as the peers
       # https://docs.docker.com/compose/networking/
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_dmproject
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=london_dmproject
       - FABRIC_LOGGING_SPEC=INFO
       #- FABRIC_LOGGING_SPEC=DEBUG
       - CORE_PEER_TLS_ENABLED=true
@@ -87,14 +87,14 @@ services:
 
   peer0.pi:
     container_name: peer0.pi
-    image: hyperledger/fabric-peer:$IMAGE_TAG
+    image: hyperledger/fabric-peer:2.2.0
     environment:
       #Generic peer variables
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       # the following setting starts chaincode containers on the same
       # bridge network as the peers
       # https://docs.docker.com/compose/networking/
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_dmproject
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=london_dmproject
       - FABRIC_LOGGING_SPEC=INFO
       #- FABRIC_LOGGING_SPEC=DEBUG
       - CORE_PEER_TLS_ENABLED=true
@@ -126,11 +126,11 @@ services:
 
   cli_n:
     container_name: cli_n
-    image: hyperledger/fabric-tools:$IMAGE_TAG
+    image: hyperledger/fabric-tools:2.2.0
     tty: true
     stdin_open: true
     environment:
-      - SYS_CHANNEL=$SYS_CHANNEL
+      - SYS_CHANNEL=system-chan
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       #- FABRIC_LOGGING_SPEC=DEBUG

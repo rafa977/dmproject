@@ -61,14 +61,14 @@ addAttribute(){
     fabric-ca-client enroll -u https://$user:$password@localhost:$port --caname $ca -M ${PWD}/network/organizations/peerOrganizations/$organization/users/$user@$organization/msp --tls.certfiles ${PWD}/network/organizations/fabric-ca/$organization/tls-cert.pem
 
     fabric-ca-client identity list --id $user --tls.certfiles ${PWD}/network/organizations/fabric-ca/$organization/tls-cert.pem 
-
+ 
 }
 
 
 helpFunction()
 {
    echo ""
-   echo "Usage: $0 -o organization -c caname -u user_1 -a 'role='admin'' -p 7054"
+   echo "Usage: -o organization -c caname -u user_1 -a 'role='admin'' -i 7054 -p userPassword"
    echo -o "Organization"
    echo -c "Caname"
    echo -u "Username"

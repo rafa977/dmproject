@@ -1,0 +1,84 @@
+In order to package-install-approve-commit the chaincode you have to export the CORE_PEER of one of the two orgs.
+
+#Kali Org
+
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="KaliMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/network/organizations/peerOrganizations/kali/peers/peer0.kali/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/network/organizations/peerOrganizations/kali/users/Admin_kali@kali/msp
+export CORE_PEER_ADDRESS=localhost:7151
+
+#Pi Org
+
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="PiMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/network/organizations/peerOrganizations/pi/peers/peer0.pi/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/network/organizations/peerOrganizations/pi/users/Admin_pi@pi/msp
+export CORE_PEER_ADDRESS=localhost:8151
+
+1. package the chaincode - This can be done by any organization
+peer lifecycle chaincode package ./chaincode/accesscontrol.tar.gz --path ./chaincode --lang golang  --label accesscontrol
+
+2. install chaincode - must be done by both organizations
+peer lifecycle chaincode install ./chaincode/accesscontrol.tar.gz
+
+*** keep the package id *** 
+
+3. approve chaincode - must be done by both organizations
+*** change the pakage id : accesscontrol:5918ef79e12b4f47ee7a074b69f271df7ae2fb98cca70a0185bfe375d7f74040 to whatever is the output of previous step (install)
+peer lifecycle chaincode approveformyorg -o localhost:7150 --ordererTLSHostnameOverride orderer.auth --tls --cafile $ORDERER_CA --channelID dmproject --name accesscontrol --version 1.0 --package-id      accesscontrol:5918ef79e12b4f47ee7a074b69f271df7ae2fb98cca70a0185bfe375d7f74040 --sequence 14
+
+4. commit chaincode - must be one organizations
+peer lifecycle chaincode commit -o localhost:7150 --ordererTLSHostnameOverride orderer.auth --tls --cafile $ORDERER_CA --channelID dmproject --name accesscontrol --peerAddresses localhost:8151 --tlsRootCertFiles ${PWD}/network/organizations/peerOrganizations/pi/peers/peer0.pi/tls/ca.crt --peerAddresses localhost:7151 --tlsRootCertFiles ${PWD}/network/organizations/peerOrganizations/kali/peers/peer0.kali/tls/ca.crt --version 1.0 --sequence 14
+ 
+
+Now the chaincode is installed successfully
+
+To query or invoke the chaincode please export the paths of an org and a user as follows
+
+#Pi org and user Admin_pi
+
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="PiMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/network/organizations/peerOrganizations/pi/peers/peer0.pi/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/network/organizations/peerOrganizations/pi/users/Admin_pi@pi/msp
+export CORE_PEER_ADDRESS=localhost:8151
+
+
+peer chaincode invoke -o localhost:7150 --ordererTLSHostnameOverride orderer.auth --tls --cafile $ORDERER_CA -C dmproject -n accesscontrol -c '{"function":"insertDevice","Args":["Computer", "Electronic Computer with Interent Access", "Adult"]}' --peerAddresses localhost:8151 --tlsRootCertFiles ${PWD}/network/organizations/peerOrganizations/pi/peers/peer0.pi/tls/ca.crt --peerAddresses localhost:7151 --tlsRootCertFiles ${PWD}/network/organizations/peerOrganizations/kali/peers/peer0.kali/tls/ca.crt --waitForResponse
+
+peer chaincode query -C dmproject -n accesscontrol -c '{"function":"ReadAsset","Args":["asset1"]}'
+peer chaincode query -C dmproject -n accesscontrol -c '{"function":"getDevice","Args":["Computer"]}'
+peer chaincode query -C dmproject -n accesscontrol -c '{"function":"accessDevice","Args":["Computer"]}'
+
+In order to change a user to invoke or query a chaincode you have only to change the CORE_PEER_MSPCONFIGPATH to point to the users msp folder.
+
+#user1_kali
+export CORE_PEER_MSPCONFIGPATH=${PWD}/network/organizations/peerOrganizations/kali/users/user1_kali@kali/msp
+
+#paul
+export CORE_PEER_MSPCONFIGPATH=${PWD}/network/organizations/peerOrganizations/kali/users/paul@kali/msp
+
+
+
+
+These are just tests that I have made on my network. They are for adding attribute to a user. 
+export FABRIC_CA_CLIENT_HOME=${PWD}/network/organizations/fabric-ca/kali
+
+fabric-ca-client enroll -u https://admin:adminpw@localhost:7154 --caname  ca_kali --tls.certfiles ${PWD}/network/organizations/fabric-ca/kali/tls-cert.pem 
+fabric-ca-client identity modify user1_kali --id.attrs 'age=Adult:ecert' --tls.certfiles ${PWD}/network/organizations/fabric-ca/kali/tls-cert.pem
+
+fabric-ca-client enroll -u https://user1_kali:user1_kali@localhost:7154 --caname ca_kali -M ${PWD}/network/organizations/peerOrganizations/kali/users/user1_kali@kali/msp --tls.certfiles ${PWD}/network/organizations/fabric-ca/kali/tls-cert.pem
+
+fabric-ca-client reenroll --id.name user1_kali --tls.certfiles ${PWD}/network/organizations/fabric-ca/kali/tls-cert.pem
+
+
+    
+fabric-ca-client identity list --id user1_kali --tls.certfiles ${PWD}/network/organizations/fabric-ca/kali/tls-cert.pem 
+fabric-ca-client identity list --id paul --tls.certfiles ${PWD}/network/organizations/fabric-ca/kali/tls-cert.pem 
+
+
+
+fabric-ca-client register --caname ca_kali --id.name paul --id.secret paulPw --id.attrs 'age=Adult:ecert' --id.type client --tls.certfiles ${PWD}/network/organizations/fabric-ca/kali/tls-cert.pem
+fabric-ca-client enroll -u https://paul:paulPw@localhost:7154 --caname ca_kali -M ${PWD}/network/organizations/peerOrganizations/kali/users/paul@kali/msp --tls.certfiles ${PWD}/network/organizations/fabric-ca/kali/tls-cert.pem
+fabric-ca-client identity modify paul --id.attrs 'age=Kid:ecert' --tls.certfiles ${PWD}/network/organizations/fabric-ca/kali/tls-cert.pem

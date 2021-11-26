@@ -11,7 +11,7 @@ networks:
 services:
 
   ca_kali:
-    image: hyperledger/fabric-ca:$CA_IMAGE_TAG
+    image: hyperledger/fabric-ca:1.4.8
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca_kali
@@ -28,7 +28,7 @@ services:
 
 
   ca_pi:
-    image: hyperledger/fabric-ca:$CA_IMAGE_TAG
+    image: hyperledger/fabric-ca:1.4.8
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca_pi
@@ -44,7 +44,7 @@ services:
       - dmproject
 
   ca_auth:
-    image: hyperledger/fabric-ca:$CA_IMAGE_TAG
+    image: hyperledger/fabric-ca:1.4.8
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca_auth

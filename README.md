@@ -63,9 +63,33 @@ There is a `.env` file which needs to be configured before running our network. 
 
 This file needs to be placed in the docker folder.
 
-###  Crypto Files - CA
+### config.yaml 
+Before we continue on creating users, peers orderers etc. a config yaml file that corresponds to each organization to the according msp folder of each peer, user, organization needs to be created.
 
-The first thing we want to do in order to create our folders is to create our crypto files. This will create all the nodes that we need for our network.
+Each config file will have the following structure:
+
+```
+NodeOUs:
+  Enable: true
+  ClientOUIdentifier:
+    Certificate: cacerts/localhost-8154-ca_.pem
+    OrganizationalUnitIdentifier: client
+  PeerOUIdentifier:
+    Certificate: cacerts/localhost-8154-ca_.pem
+    OrganizationalUnitIdentifier: peer
+  AdminOUIdentifier:
+    Certificate: cacerts/localhost-8154-ca_.pem
+    OrganizationalUnitIdentifier: admin
+  OrdererOUIdentifier:
+    Certificate: cacerts/localhost-8154-ca_.pem
+    OrganizationalUnitIdentifier: orderer
+```
+
+hehe... my robot got you again! Keep reading the instructions. The crypto-gen file is generating also the config.yaml files for you. 
+
+** If you want to do it manually, remember that it works only with `.yaml` ending and not with `.yml`.
+
+###  Crypto Files - CA
 
 Before you run the script to create the files, you need to start the docker container of each organizations CA. This can be done and configured in the `docker-compose-ca.yml` file.
 
@@ -75,6 +99,48 @@ docker-compose -f ./network/docker/docker-compose-ca.yml up -d
 ```
 
 
+### Crypto Generator - crypto-gen - And here comes the magic
+
+In order to create the crypto files, you can run the script of `crypto-gen.sh` file.
+
+E.g. Create new user for organization
+```
+./crypto-gen.sh -o orgName -t user -u 'user1' -c ca_auth -p 7054 
+```
+`-o` ==> Organization Name where you want to create your files
+`-u` ==> String array where you specify the username for each user separated with space
+`-p` ==> Port where the ca listens to
+`-c` ==> ca name of the CA that corresponds to the organization
+`-t` ==> type of crypto files creation (user, orderer, peer, admin)
+
+** When an `orderer` is created the `-u` is not required since a default orderer user is created.
+
+Remeber the password of the user follows always the structure: 
+`user_org` 
+E.g. 
+username = paul
+org = kali
+password == paul_kali
+
+In order to have a functional network you need to have the following nodes:
+
+1. Peer Organization
+    1. Peer
+    2. User
+    3. Admin 
+2. Orderer Organization
+    1. Orderer
+    2. Admin User
+
+
+After creating the users, we must specify their attributes because with this way we have not specify them.
+
+Guess what, another script file waits for you. addAttribute.sh
+
+In order to add an attribute we have to modify an existing user and then reenroll him.
+
+```
+.addAttribute.sh -o kali -c ca_kali -u user_1 -a 'age=Kid:ecert' -i 7154 -p passwordUser
 
 #### Set "FABRIC_CFG_PATH"
 `export FABRIC_CFG_PATH=${PWD}/network/configtx`
@@ -91,9 +157,9 @@ Grant execution permission to `configtx.yaml`
 configtxgen -profile PocOrgsOrdererGenesis -channelID system-channel -outputBlock ./network/system-genesis-block/genesis.block
 ```
 
-### Bring the network up with couchdb
+### Bring the network up
 ```
-docker-compose -f network/docker/docker-compose-net.yaml  up -d
+docker-compose -f network/docker/docker-compose-net.yml  up -d
 ```
 
 ### Create channel block
@@ -182,10 +248,10 @@ peer channel update -o localhost:7150 --ordererTLSHostnameOverride orderer.auth 
 ###  Bring down the network
 #### With Fabric CA
 ```
-docker-compose -f network/docker/docker-compose-net.yaml -f network/docker/docker-compose-ca.yaml down
+docker-compose -f network/docker/docker-compose-net.yml -f network/docker/docker-compose-ca.yml down
 ```
 
 #### Without Fabric CA
 ```
-docker-compose -f network/docker/docker-compose-net.yaml down
+docker-compose -f network/docker/docker-compose-net.yml down
 ```
