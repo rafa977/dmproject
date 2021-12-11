@@ -91,11 +91,11 @@ hehe... my robot got you again! Keep reading the instructions. The crypto-gen fi
 
 ###  Crypto Files - CA
 
-Before you run the script to create the files, you need to start the docker container of each organizations CA. This can be done and configured in the `docker-compose-ca.yml` file.
+Before you run the script to create the files, you need to start the docker container of each organizations CA. This can be done and configured in the `docker-compose-ca.yaml` file.
 
-After you edited the `docker-compose-ca.yml` file and configured it with the settings you want, you can run it on docker.
+After you edited the `docker-compose-ca.yaml` file and configured it with the settings you want, you can run it on docker.
 ```
-docker-compose -f ./network/docker/docker-compose-ca.yml up -d
+docker-compose -f ./network/docker/docker-compose-ca.yaml up -d
 ```
 
 
@@ -160,7 +160,7 @@ configtxgen -profile PocOrgsOrdererGenesis -channelID system-channel -outputBloc
 
 ### Bring the network up
 ```
-docker-compose -f network/docker/docker-compose-net.yml  up -d
+docker-compose -f network/docker/docker-compose-net.yaml  up -d
 ```
 
 ### Create channel block

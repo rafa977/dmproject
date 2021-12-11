@@ -1,14 +1,5 @@
 #!/bin/bash
 # **********
-# The script generates the crypto material for IOSS-DR PoC on EBSI network 1st iteration
-# It executes one by one the commands described in the ca-instructions.md guide
-#
-# Go to cd /etc/hyperledger/iossdr-poc-ebsi
-# grant exec permission
-# chmod +x ./network/crypto-generator.sh
-# and then run this:
-# . ./network/crypto-generator.sh
-# **********
 export PATH=/etc/hyperledger/bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}/network/configtx
 # **********
@@ -135,39 +126,25 @@ createUser(){
     echo "=====> Register user "$user"_"$organization" for "$organization
     fabric-ca-client register --caname $ca --id.name $userPw --id.secret $userPw --id.type client --tls.certfiles ${PWD}/network/organizations/fabric-ca/$organization/tls-cert.pem > /dev/null
     
-    status=$?
-    if [ $status -eq 1 ]; then
-        echo "User already exists"
-        exit 1;
-    elif [ $status -eq 2 ]; then
-        echo "Misuse of shell builtins"
-        exit 1;
-    elif [ $status -eq 126 ]; then
-        echo "Command invoked cannot execute"
-        exit 1;
-    elif [ $status -eq 128 ]; then
-        echo "Invalid argument"
-        exit 1;
-    fi
-
-    touch ${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo 'NodeOUs:'>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '    Enable: true'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '    ClientOUIdentifier:'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '       Certificate: cacerts/localhost-'$port'-'$ca'.pem'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '       OrganizationalUnitIdentifier: client'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '    PeerOUIdentifier:'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '       Certificate: cacerts/localhost-'$port'-'$ca'.pem'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '       OrganizationalUnitIdentifier: peer'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '    AdminOUIdentifier:'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '       Certificate: cacerts/localhost-'$port'-'$ca'.pem'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '       OrganizationalUnitIdentifier: admin'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '    OrdererOUIdentifier:'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '       Certificate: cacerts/localhost-'$port'-'$ca'.pem'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-    echo '       OrganizationalUnitIdentifier: orderer'>>${PWD}/network/organizations/peerOrganizations/$organization/peers/$userOrg@$organization/msp/config.yaml
-
     echo "=====> Generate the "$user"_"$organization"  msp for "$organization "(Enroll)"
     fabric-ca-client enroll -u https://$userOrg:$userPw@localhost:$port --caname $ca -M ${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp --tls.certfiles ${PWD}/network/organizations/fabric-ca/$organization/tls-cert.pem
+
+    touch ${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo 'NodeOUs:'>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '    Enable: true'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '    ClientOUIdentifier:'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '       Certificate: cacerts/localhost-'$port'-'$ca'.pem'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '       OrganizationalUnitIdentifier: client'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '    PeerOUIdentifier:'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '       Certificate: cacerts/localhost-'$port'-'$ca'.pem'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '       OrganizationalUnitIdentifier: peer'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '    AdminOUIdentifier:'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '       Certificate: cacerts/localhost-'$port'-'$ca'.pem'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '       OrganizationalUnitIdentifier: admin'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '    OrdererOUIdentifier:'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '       Certificate: cacerts/localhost-'$port'-'$ca'.pem'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+    echo '       OrganizationalUnitIdentifier: orderer'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
+
 
 }
 
@@ -210,6 +187,9 @@ createAdmin(){
         exit 1;
     fi
 
+    echo "=====> Generate the "$user"_"$organization"  msp for "$organization "(Enroll)"
+    fabric-ca-client enroll -u https://$userOrg:$userPw@localhost:$port --caname $ca -M ${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp --tls.certfiles ${PWD}/network/organizations/fabric-ca/$organization/tls-cert.pem
+
     #cp ${PWD}/network/organizations/peerOrganizations/$organization/msp/config.yaml ${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg/msp/config.yaml
     touch ${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
     echo 'NodeOUs:'>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
@@ -226,9 +206,6 @@ createAdmin(){
     echo '    OrdererOUIdentifier:'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
     echo '       Certificate: cacerts/localhost-'$port'-'$ca'.pem'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
     echo '       OrganizationalUnitIdentifier: orderer'>>${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp/config.yaml
-
-    echo "=====> Generate the "$user"_"$organization"  msp for "$organization "(Enroll)"
-    fabric-ca-client enroll -u https://$userOrg:$userPw@localhost:$port --caname $ca -M ${PWD}/network/organizations/peerOrganizations/$organization/users/$userOrg@$organization/msp --tls.certfiles ${PWD}/network/organizations/fabric-ca/$organization/tls-cert.pem
 
 }
 
