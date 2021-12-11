@@ -20,7 +20,7 @@ services:
     environment:
       - FABRIC_LOGGING_SPEC=INFO
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=7150
+      - ORDERER_GENERAL_LISTENPORT=7050
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
       - ORDERER_GENERAL_LOCALMSPID=AuthMSP
@@ -43,7 +43,7 @@ services:
         - ../organizations/ordererOrganizations/auth/orderers/orderer.auth/tls/:/var/hyperledger/orderer/tls
         - orderer.auth:/var/hyperledger/production/orderer
     ports:
-      - 7150:7150
+      - 7050:7050
     networks:
       - dmproject
 
@@ -66,12 +66,12 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Peer specific variabes
       - CORE_PEER_ID=peer0.kali
-      - CORE_PEER_ADDRESS=peer0.kali:7151
-      - CORE_PEER_LISTENADDRESS=0.0.0.0:7151
-      - CORE_PEER_CHAINCODEADDRESS=peer0.kali:7152
-      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7152
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.kali:7151
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.kali:7151
+      - CORE_PEER_ADDRESS=peer0.kali:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.kali:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.kali:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.kali:7051
       - CORE_PEER_LOCALMSPID=KaliMSP
     volumes:
         - /var/run/:/host/var/run/
@@ -81,7 +81,7 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     ports:
-      - 7151:7151
+      - 7051:7051
     networks:
       - dmproject
 
@@ -104,12 +104,12 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Peer specific variabes
       - CORE_PEER_ID=peer0.pi
-      - CORE_PEER_ADDRESS=peer0.pi:8151
-      - CORE_PEER_LISTENADDRESS=0.0.0.0:8151
-      - CORE_PEER_CHAINCODEADDRESS=peer0.pi:8152
-      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8152
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.pi:8151
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.pi:8151
+      - CORE_PEER_ADDRESS=peer0.pi:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.pi:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.pi:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.pi:8051
       - CORE_PEER_LOCALMSPID=PiMSP
     volumes:
         - /var/run/:/host/var/run/
@@ -119,7 +119,7 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     ports:
-      - 8151:8151
+      - 8051:8051
     networks:
       - dmproject
 
@@ -136,7 +136,7 @@ services:
       #- FABRIC_LOGGING_SPEC=DEBUG
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_ID=cli_n
-      - CORE_PEER_ADDRESS=peer0.kali:7151
+      - CORE_PEER_ADDRESS=peer0.kali:7051
       - CORE_PEER_LOCALMSPID=KaliMSP
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/kali/peers/peer0.kali/tls/server.crt
