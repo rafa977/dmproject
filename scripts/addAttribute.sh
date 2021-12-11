@@ -1,18 +1,7 @@
 #!/bin/bash
 # **********
-# The script generates the crypto material for IOSS-DR PoC on EBSI network 1st iteration
-# It executes one by one the commands described in the ca-instructions.md guide
-#
-# Go to cd /etc/hyperledger/iossdr-poc-ebsi
-# grant exec permission
-# chmod +x ./network/crypto-generator.sh
-# and then run this:
-# . ./network/crypto-generator.sh
-# **********
 export PATH=/etc/hyperledger/bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}/network/configtx
-# **********
-# ATTENTION: Be sure to bring the docker containers up
 # **********
 
 
