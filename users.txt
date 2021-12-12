@@ -1,0 +1,16 @@
+./crypto-gen.sh -t user -u 'dani' -c ca_kali -o kali -p 7054
+./crypto-gen.sh -t admin -u 'Admin' -c ca_kali -o kali -p 7054
+
+./crypto-gen.sh -t peer -u 'peer0' -c ca_kali -o kali -p 7054
+
+./crypto-gen.sh -t admin -u 'Admin' -c ca_pi -o pi -p 8054
+./crypto-gen.sh -t user -u 'Adult' -c ca_pi -o pi -p 8054
+./crypto-gen.sh -t user -u 'Kid' -c ca_pi -o pi -p 8054
+./crypto-gen.sh -t peer -u 'peer0' -c ca_pi -o pi -p 8054
+
+./addAttribute.sh -o pi -c ca_pi -u Adult_pi -a 'age=Adult:ecert' -i 8054 -p Adult_pi
+./addAttribute.sh -o pi -c ca_pi -u Kid_pi -a 'age=Kid:ecert' -i 8054 -p Kid_pi
+
+./addAttribute.sh -o kali -c ca_kali -u dani_kali -a 'age=Adult:ecert' -i 7054 -p dani_kali
+
+./crypto-gen.sh -t orderer -c ca_auth -o auth -p 9054

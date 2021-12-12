@@ -140,7 +140,7 @@ Guess what, another script file waits for you. addAttribute.sh
 In order to add an attribute we have to modify an existing user and then reenroll him.
 
 ```
-.addAttribute.sh -o kali -c ca_kali -u user_1 -a 'age=Kid:ecert' -i 7154 -p passwordUser
+.addAttribute.sh -o kali -c ca_kali -u user_1 -a 'age=Kid:ecert' -i 7054 -p passwordUser
 ```
 
 #### Set "FABRIC_CFG_PATH"
@@ -155,7 +155,7 @@ Grant execution permission to `configtx.yaml`
 
 ### Generate system genesis block
 ```
-configtxgen -profile PocOrgsOrdererGenesis -channelID system-channel -outputBlock ./network/system-genesis-block/genesis.block
+configtxgen -profile PocOrgsOrdererGenesis -channelID system-chan -outputBlock ./network/system-genesis-block/genesis.block
 ```
 
 ### Bring the network up
@@ -196,12 +196,12 @@ export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="KaliMSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/network/organizations/peerOrganizations/kali/peers/peer0.kali/tls/ca.crt
 export CORE_PEER_MSPCONFIGPATH=${PWD}/network/organizations/peerOrganizations/kali/users/Admin_kali@kali/msp
-export CORE_PEER_ADDRESS=localhost:7151
+export CORE_PEER_ADDRESS=localhost:7051
 ```
 #### Create the channel
 
 ```
-peer channel create  -o localhost:7150  -c dmproject --ordererTLSHostnameOverride orderer.auth  -f ${PWD}/network/channel-artifacts/dmproject.tx --outputBlock ./network/channel-artifacts/dmproject.block --tls true --cafile ${PWD}/network/organizations/ordererOrganizations/auth/orderers/orderer.auth/msp/tlscacerts/tlsca.auth-cert.pem
+peer channel create  -o localhost:7050  -c dmproject --ordererTLSHostnameOverride orderer.auth  -f ${PWD}/network/channel-artifacts/dmproject.tx --outputBlock ./network/channel-artifacts/dmproject.block --tls true --cafile ${PWD}/network/organizations/ordererOrganizations/auth/orderers/orderer.auth/msp/tlscacerts/tlsca.auth-cert.pem
 ```
 
 ### Kali join the channel
@@ -220,7 +220,7 @@ export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="PiMSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/network/organizations/peerOrganizations/pi/peers/peer0.pi/tls/ca.crt
 export CORE_PEER_MSPCONFIGPATH=${PWD}/network/organizations/peerOrganizations/pi/users/Admin_pi@pi/msp
-export CORE_PEER_ADDRESS=localhost:8151
+export CORE_PEER_ADDRESS=localhost:8051
 ```
 #### Join the channel Pi
 ```
@@ -232,7 +232,7 @@ peer channel join -b ./network/channel-artifacts/dmproject.block
 Use the Kali ENV variabes from above
 
 ```
-peer channel update -o localhost:7150 --ordererTLSHostnameOverride orderer.auth -c dmproject -f ${PWD}/network/channel-artifacts/KaliAnchors.tx --tls --cafile $ORDERER_CA
+peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.auth -c dmproject -f ${PWD}/network/channel-artifacts/KaliAnchors.tx --tls --cafile $ORDERER_CA
 ```
 
 
@@ -240,7 +240,7 @@ peer channel update -o localhost:7150 --ordererTLSHostnameOverride orderer.auth 
 Use the Pi ENV variabes from above
 
 ```
-peer channel update -o localhost:7150 --ordererTLSHostnameOverride orderer.auth -c dmproject -f ${PWD}/network/channel-artifacts/PiAnchors.tx --tls --cafile $ORDERER_CA
+peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.auth -c dmproject -f ${PWD}/network/channel-artifacts/PiAnchors.tx --tls --cafile $ORDERER_CA
 ```
 
 

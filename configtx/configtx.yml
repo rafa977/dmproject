@@ -42,7 +42,7 @@ Organizations:
                 Rule: "OR('AuthMSP.admin')"
 
         OrdererEndpoints:
-            - orderer.auth:7150                
+            - orderer.auth:7050                
 
     - &Kali
         # DefaultOrg defines the organization which is used in the sampleconfig
@@ -77,7 +77,7 @@ Organizations:
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: peer0.kali
-              Port: 7151
+              Port: 7050
 
     - &Pi
         # DefaultOrg defines the organization which is used in the sampleconfig
@@ -112,7 +112,7 @@ Organizations:
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: peer0.pi
-              Port: 8151
+              Port: 8050
 
    
 ################################################################################
@@ -226,12 +226,12 @@ Orderer: &OrdererDefaults
     # as TLS validation.  The preferred way to specify orderer addresses is now
     # to include the OrdererEndpoints item in your org definition
     Addresses:
-        - orderer.auth:7150
+        - orderer.auth:7050
 
     EtcdRaft:
         Consenters:
         - Host: orderer.auth
-          Port: 7150
+          Port: 7050
           ClientTLSCert: ../organizations/ordererOrganizations/auth/orderers/orderer.auth/tls/server.crt
           ServerTLSCert: ../organizations/ordererOrganizations/auth/orderers/orderer.auth/tls/server.crt
 
