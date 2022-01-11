@@ -1,9 +1,9 @@
 ./crypto-gen.sh -t user -u 'dani' -c ca_kali -o kali -p 7054
-./crypto-gen.sh -t admin -u 'Admin' -c ca_kali -o kali -p 7054
+./crypto-gen.sh -t admin -u 'Admin' -c ca_kali -o kali -p 7154
 
 ./crypto-gen.sh -t peer -u 'peer0' -c ca_kali -o kali -p 7054
 
-./crypto-gen.sh -t admin -u 'Admin' -c ca_pi -o pi -p 8054
+./crypto-gen.sh -t admin -u 'Admin' -c ca_pi -o pi -p 8154
 ./crypto-gen.sh -t user -u 'Adult' -c ca_pi -o pi -p 8054
 ./crypto-gen.sh -t user -u 'Kid' -c ca_pi -o pi -p 8054
 ./crypto-gen.sh -t peer -u 'peer0' -c ca_pi -o pi -p 8054

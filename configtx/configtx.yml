@@ -77,7 +77,7 @@ Organizations:
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: peer0.kali
-              Port: 7050
+              Port: 7051
 
     - &Pi
         # DefaultOrg defines the organization which is used in the sampleconfig
@@ -112,7 +112,7 @@ Organizations:
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: peer0.pi
-              Port: 8050
+              Port: 8051
 
    
 ################################################################################

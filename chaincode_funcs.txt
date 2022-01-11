@@ -13,7 +13,7 @@ export CORE_PEER_ADDRESS=localhost:7051
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="PiMSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/network/organizations/peerOrganizations/pi/peers/peer0.pi/tls/ca.crt
-export CORE_PEER_MSPCONFIGPATH=${PWD}/network/organizations/peerOrganizations/pi/users/Admin_pi@pi/msp
+export CORE_PEER_MSPCONFIGPATH=${PWD}/network/organizations/peerOrganizations/pi/users/Adminn_pi@pi/msp
 export CORE_PEER_ADDRESS=localhost:8051
 
 1. package the chaincode - This can be done by any organization
@@ -26,7 +26,7 @@ peer lifecycle chaincode install ./chaincode/accesscontrol.tar.gz
 
 3. approve chaincode - must be done by both organizations
 *** change the pakage id : accesscontrol:5918ef79e12b4f47ee7a074b69f271df7ae2fb98cca70a0185bfe375d7f74040 to whatever is the output of previous step (install)
-peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.auth --tls --cafile $ORDERER_CA --channelID dmproject --name accesscontrol --version 1.0 --package-id accesscontrol:15db9329e7ac7d6924a21ecbabaf994c7d0c8b902ef11888d400f0b98574bcd1 --sequence 1
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.auth --tls --cafile $ORDERER_CA --channelID dmproject --name accesscontrol --version 1.0 --package-id accesscontrol:a19df0ff3111b46c34646aaee1ee97cb9f1e052f6210b587f7315cd80d2ff136 --sequence 1
 
 4. commit chaincode - must be one organizations
 peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.auth --tls --cafile $ORDERER_CA --channelID dmproject --name accesscontrol --peerAddresses localhost:8051 --tlsRootCertFiles ${PWD}/network/organizations/peerOrganizations/pi/peers/peer0.pi/tls/ca.crt --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/network/organizations/peerOrganizations/kali/peers/peer0.kali/tls/ca.crt --version 1.0 --sequence 1

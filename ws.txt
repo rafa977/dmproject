@@ -1,0 +1,45 @@
+func (s *SmartContract) getAllWsData(APIstub shim.ChaincodeStubInterface , args []string) sc.Response {
+
+    resultsIterator, err := APIstub.GetQueryResult("{\"selector\":{\"_id\":{\"$ne\": null }} }")
+    if err != nil {
+    	return shim.Error("Error occured when trying to find the provided data: "+err.Error())
+    }
+
+	buffer, err := constructQueryResponseFromIterator(resultsIterator)
+	if err != nil {
+    	return shim.Error("Error occured when trying to find the provided data: "+err.Error())
+	}
+
+	return shim.Success(buffer.Bytes())
+}
+
+func constructQueryResponseFromIterator(resultsIterator shim.StateQueryIteratorInterface) (*bytes.Buffer, error){
+
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext(){
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+
+		if bArrayMemberAlreadyWritten == true{
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"key\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(queryResponse.Key)
+		buffer.WriteString("\"")
+		buffer.WriteString(", \"Record\":")
+
+		buffer.WriteString(string(queryResponse.Value))
+		buffer.WriteString("}")
+
+		bArrayMemberAlreadyWritten = true
+	}
+
+	buffer.WriteString("]")
+	return &buffer, nil
+}

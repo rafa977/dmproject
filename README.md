@@ -226,6 +226,7 @@ export CORE_PEER_ADDRESS=localhost:8051
 ```
 peer channel join -b ./network/channel-artifacts/dmproject.block
 ```
+export CORE_PEER_MSPCONFIGPATH=${PWD}/network/organizations/peerOrganizations/pi/users/Adminn_pi@pi/msp
 
 
 ### Update the channel definition to define the anchor peer for  Kali
